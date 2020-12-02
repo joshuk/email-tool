@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap');
+
+body { margin: 0; font-family: 'Kumbh Sans', sans-serif; font-size: 16px; }
+
+.app { position: relative; opacity: 1; }
+.app.inactive { opacity: 0.5; pointer-events: none; }
+
+.app canvas { background: url('../img/dot-grid.jpg'); }
+
+.app .buttons { position: absolute; top: 0; left: 0; width: 2.5rem; }
+.app .buttons button,
+.app .export { width: 100%; height: 2.5rem; margin: 0; background: #333; border: 0; color: white; cursor: pointer; font-family: inherit; font-weight: 700; }
+.app .buttons button:focus,
+.app .export:focus { outline: 0; }
+
+.app .buttons .tool.active { background: white; border: 3px solid #333; color: #333; }
+.app .buttons .tool.box { margin-top: 0.75rem; }
+
+.app .export { position: absolute; bottom: 0; right: 0; width: 2.5rem; }
+
+.popup { position: absolute; top: 50%; left: 50%; padding: 2rem 3rem; background: white; border: 4px solid #333; box-shadow: -0.5rem 0.5rem #333; min-width: 18rem; transform: translate(-50%, -50%); }
+.popup.inactive { opacity: 0; pointer-events: none; }
+
+.popup p { margin: 0; font-size: 1.25rem; }
+.popup p:not(:last-child) { margin-bottom: 1.325rem; }
+
+.popup input[type=text],
+.popup input[type=number] { height: 2rem; margin-right: 0.5rem; padding: 0.5rem; border: 2px solid #333; font-family: inherit; }
+
+.popup button { height: 2rem; padding: 0 0.75rem; background: #333; border: none; color: white; cursor: pointer; font-family: inherit; }
+
+.popup.info-popup p { margin-bottom: 0.5rem; }
+.popup.info-popup input[type=text] { width: 100%; margin-bottom: 1.25rem; }
+.popup.info-popup textarea { display: block; width: 100%; margin-bottom: 1.25rem; padding: 0.5rem; border: 2px solid #333; font-family: inherit; resize: vertical; }

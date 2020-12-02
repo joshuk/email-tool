@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>Email Maker</title>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
+        <div class="app inactive">
+            <canvas id="main"></canvas>
+
+            <div class="buttons">
+                <button class="set-width" title="Edit Email Width" data-popup="image-width">W</button>
+                <button class="tool box" title="Create Box" data-tool="box">B</button>
+                <button class="tool horizontal-split" title="Create Horizonal Split" data-tool="horizontal-split">hS</button>
+                <button class="tool vertical-split" title="Create Vertical Split" data-tool="vertical-split">vS</button>
+                <button class="tool info" title="Edit Box Info" data-tool="info">I</button>
+            </div>
+
+            <button class="export">E</button>
+        </div>
+
+        <div class="popup image-select-popup">
+            <p>Upload an image to begin</p>
+            <input type="file" class="image-select"/>
+        </div>
+
+        <div class="popup image-width-popup inactive">
+            <p>Input desired image width</p>
+            <input type="number" class="image-width"/>
+            <button class="edit-image-width">Change</button>
+        </div>
+
+        <div class="popup info-popup inactive">
+            <p>URL:</p>
+            <input type="text" class="info-url"/>
+            <p>Alt text:</p>
+            <textarea class="info-alt-text" rows="3"></textarea>
+            <button class="save-info">Update</button>
+        </div>
+
+        <script src="assets/js/util.js"></script>
+        <script src="assets/js/canvas.js"></script>
+        <script src="assets/js/image.js"></script>
+        <script src="assets/js/tools.js"></script>
+        <script src="assets/js/draw.js"></script>
+        <script src="assets/js/export.js"></script>
+    </body>
+</html>
