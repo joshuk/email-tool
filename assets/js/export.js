@@ -1,7 +1,32 @@
+//Set some variables here that will be needed
+//in multiple functions
+let exportCanvas, exportCtx;
+let imageNumber = 1;
+let exportedImages = [];
+
+let fileName = 'email';
+let emailSubject = 'Email';
+
+let zipFile = new JSZip();
+
 $('.export').addEventListener('click', () => {
+    openPopup('export');
+});
+
+$('.begin-export').addEventListener('click', () => {
+    closePopup('export');
+
     //Can't export if there's nothing to export
     if(Object.keys(boxes).length == 1){
+        alert('Please add a box to export');
         return;
+    }
+
+    if($('.email-filename').value){
+        fileName = $('.email-filename').value;
+    }
+    if($('.email-subject').value){
+        emailSubject = $('.email-subject').value;
     }
 
     //Right, now start the export process
@@ -148,17 +173,70 @@ const generateEmail = () => {
     const parentChildren = parentBox.children;
     const sortedChildren = sortChildrenByY(parentChildren);
 
-    let emailElement = createElement('table');
+    //Reset the image number
+    imageNumber = 1;
+
+    //Let's generate the table first before
+    //doing anything else
+    let emailElement = createElement('table', {
+        attrs: {
+            width: imageWidth,
+            border: '0',
+            cellspacing: '0',
+            cellpadding: '0'
+        }
+    });
 
     for(let i=0;i<sortedChildren.length;i++){
         let currentBox = sortedChildren[i];
 
         let currentBoxHTML = generateHTMLFromBox(currentBox, emailElement);
+        //Append it to the tbody, not the table
         emailElement.childNodes[0].appendChild(currentBoxHTML);
     }
 
-    console.log(boxes);
-    console.log(emailElement);
+    //Now that's done, let's generate the
+    //body and stuff. All of this is just
+    //boring markup shit
+    let containerTable = createElement('table', {
+        attrs: {
+            width: '100%',
+            border: '0',
+            cellspacing: '0',
+            cellpadding: '0'
+        }
+    });
+
+    let containerRow = containerTable.insertRow();
+    let containerCell = containerRow.insertCell();
+    containerCell.align = 'center';
+    containerCell.appendChild(emailElement);
+
+    let bodyElement = createElement('body', {
+        attrs: {
+            bgcolor: '#FFFFFF',
+            leftmargin: '0',
+            topmargin: '0',
+            marginwidth: '0',
+            marginheight: '0'
+        }
+    });
+    bodyElement.appendChild(containerTable);
+
+    let headElement = createElement('head');
+    let titleElement = createElement('title', {
+        textContent: emailSubject
+    });
+    headElement.appendChild(titleElement);
+
+    let htmlElement = createElement('html');
+    htmlElement.appendChild(headElement);
+    htmlElement.appendChild(bodyElement);
+
+    let emailHTMLString = htmlElement.outerHTML;
+    let beautifiedHTMLString = html_beautify(emailHTMLString);
+
+    zipFile.file(`${fileName}.html`, beautifiedHTMLString);
 }
 
 const generateHTMLFromBox = (id, parentElement) => {
@@ -178,13 +256,36 @@ const generateHTMLFromBox = (id, parentElement) => {
                 //create some elements for the children
                 //to sit in
                 newRow = parentElement.insertRow();
-                newCell = newRow.insertCell();
+
+                //If there's only one child we'll add the
+                //td later on
+                if(box.children.length > 1){
+                    newCell = newRow.insertCell();
+                }
             }
 
-            let newTable = createElement('table');
+            //We don't need to make a whole new table if
+            //there's only one child, just a td
+            if(box.children.length == 1){
+                if(parentElement.tagName == 'TABLE'){
+                    newRow.appendChild(generateHTMLFromBox(box.children[0], newRow));
+
+                    return newRow;
+                }else{
+                    return generateHTMLFromBox(box.children[0], parentElement);
+                }
+            }
+
+            let newTable = createElement('table', {
+                attrs: {
+                    border: '0',
+                    cellpadding: '0',
+                    cellspacing: '0'
+                }
+            });
 
             //Check here whether this container has several
-            //rows as children (warning: beef)
+            //rows as children
             if(box.children.length > 1 
             && boxes[box.children[0]].width == box.width && boxes[box.children[0]].height != box.height){
                 //This is a group of trs
@@ -205,7 +306,6 @@ const generateHTMLFromBox = (id, parentElement) => {
                 for(let i=0;i<boxChildren.length;i++){
                     let currentChild = boxChildren[i];
     
-                    //let newTableCell = newTableRow.insertCell();
                     newTableRow.appendChild(generateHTMLFromBox(currentChild, newTableRow));
                 }
             }
@@ -228,24 +328,39 @@ const generateHTMLFromBox = (id, parentElement) => {
             }else{
                 let newLink;
 
+                //Create the link if there is a URL set
                 if(box.url !== undefined){
-                    console.log('create a new link ' + id);
-
-                    newLink = createElement('a');
-                    newLink.href = box.url;
-                    newLink.target = '_blank';
+                    newLink = createElement('a', {
+                        attrs: {
+                            href: box.url,
+                            target: '_blank'
+                        }
+                    });
                 }
 
+                let currentImageNumber = imageNumber.toString().padStart(2, '0');
+
                 //This is the last child, so we need to get the content
-                let newText = document.createTextNode(`image ${id} - alt (${(box.alt ?? '\'\'')})`);
+                let newImage = createElement('img', {
+                    attrs: {
+                        src: `images/${fileName}_${currentImageNumber}.jpg`,
+                        width: box.width,
+                        height: box.height,
+                        alt: box.alt ?? '',
+                        border: '0',
+                        style: 'display:block;'
+                    }
+                });
+
+                getImageFromBox(id, currentImageNumber);
+
+                imageNumber += 1;
 
                 if(box.url !== undefined){
-                    console.log('add new link ' + id);
-                    newLink.appendChild(newText);
+                    newLink.appendChild(newImage);
                     newCell.appendChild(newLink);
                 }else{
-                    console.log('no link ' + id);
-                    newCell.appendChild(newText);
+                    newCell.appendChild(newImage);
                 }
             }
 
@@ -254,6 +369,7 @@ const generateHTMLFromBox = (id, parentElement) => {
     }
 }
 
+//I took this function from work
 const createElement = (tag, { childNodes, innerHTML, textContent, attrs } = {}) => {
     let element = document.createElement(tag);
 
@@ -274,4 +390,58 @@ const createElement = (tag, { childNodes, innerHTML, textContent, attrs } = {}) 
     }
 
     return element;
+}
+
+const getImageFromBox = (id, currentImageNumber) => {
+    if(!exportCanvas){
+        exportCanvas = createElement('canvas');
+        exportCtx = exportCanvas.getContext('2d');
+    }
+
+    let box = boxes[id];
+
+    exportCtx.canvas.width = imageWidth;
+    exportCtx.canvas.height = imageHeight;
+
+    //If I don't draw the image here and crop
+    //it ends up being weird if the image is
+    //resized
+    exportCtx.drawImage(image, 0, 0, imageWidth, imageHeight);
+
+    //Snip out the part that we actually want
+    let boxSnippet = exportCtx.getImageData(box.startX, box.startY, box.width, box.height);
+
+    //Resize the canvas to the size of the
+    //current box (which clears it too)
+    exportCtx.canvas.width = box.width;
+    exportCtx.canvas.height = box.height;
+
+    //Then put it back on the canvas
+    exportCtx.putImageData(boxSnippet, 0, 0);
+
+    exportCanvas.toBlob((blob) => {
+        zipFile.file(`images/${fileName}_${currentImageNumber}.jpg`, blob);
+        exportedImages.push(currentImageNumber);
+
+        if(exportedImages.length == imageNumber-1){
+            downloadZip();
+        }
+    }, 'image/jpeg', 0.9);
+}
+
+const downloadZip = () => {
+    zipFile.generateAsync({type:'blob'}).then((blob) => {
+        let downloadElement = createElement('a', {
+            attrs: {
+                href: URL.createObjectURL(blob),
+                style: 'display:none;',
+                download: `${fileName}.zip`
+            }
+        });
+
+        $('body').appendChild(downloadElement);
+        downloadElement.click();
+    }, (e) => {
+        alert(`File failed to download.\nError:\n ${e}`);
+    });
 }

@@ -5,7 +5,7 @@ let cursorY = 0;
 let relativeCursorX = 0;
 let relativeCursorY = 0;
 
-let debug = true;
+let debug = false;
 
 const draw = () => {
     ctx.clearRect(0, 0, pageWidth, pageHeight);
@@ -23,8 +23,10 @@ const draw = () => {
         let boxHeight = (currentBox.height !== undefined ? currentBox.height : (cursorY - boxStartY));
 
         ctx.strokeStyle = 'red';
+        ctx.fillStyle = 'red';
         ctx.strokeRect(boxStartX, boxStartY, boxWidth, boxHeight);
 
+        ctx.textAlign = 'left';
         if(debug){
             ctx.fillText(
                 `${boxKeys[i]} start`,
@@ -42,11 +44,17 @@ const draw = () => {
         if(currentBox.width === undefined){
             ctx.fillText(
                 `${(cursorX - boxStartX)}px x ${(cursorY - boxStartY)}px`, 
-                (currentBox.startX + imageX) + 10, 
-                (currentBox.startY + imageY) + 10
+                (currentBox.startX + imageX) + 7, 
+                (currentBox.startY + imageY) + 15
             );
         }
         
+        ctx.textAlign = 'right';
+        ctx.fillText(
+            `${(currentBox.url ? 'U ' : '')}${(currentBox.alt ? 'A' : '')}`,
+            (currentBox.startX + imageX + currentBox.width) - 7, 
+            (currentBox.startY + imageY) + 15
+        );
     }
 
     requestAnimationFrame(draw);

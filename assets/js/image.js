@@ -10,6 +10,7 @@ $('.image-select').addEventListener('change', function(){
 
 image.addEventListener('load', function() {
     closePopup('image-select');
+    $('.app').classList.remove('start');
 
     imageWidth = image.width;
     imageHeight = image.height;

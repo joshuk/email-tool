@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="assets/css/style.css">
     </head>
     <body>
-        <div class="app inactive">
+        <div class="app inactive start">
             <canvas id="main"></canvas>
 
             <div class="buttons">
@@ -19,23 +19,37 @@
         </div>
 
         <div class="popup image-select-popup">
-            <p>Upload an image to begin</p>
-            <input type="file" class="image-select"/>
+            <label for="imageSelect">Upload an image to begin</label>
+            <input type="file" class="image-select" id="imageSelect"/>
         </div>
 
         <div class="popup image-width-popup inactive">
-            <p>Input desired image width</p>
-            <input type="number" class="image-width"/>
+            <label for="imageWidth">Input desired image width</label>
+            <input type="number" class="image-width" id="imageWidth"/>
+
             <button class="edit-image-width">Change</button>
         </div>
 
         <div class="popup info-popup inactive">
-            <p>URL:</p>
-            <input type="text" class="info-url"/>
-            <p>Alt text:</p>
-            <textarea class="info-alt-text" rows="3"></textarea>
+            <label for="infoURL">URL:</label>
+            <input type="text" class="info-url" id="infoURL"/>
+            <label for="infoAlt">Alt text:</label>
+            <textarea class="info-alt-text" rows="3" id="infoAlt"></textarea>
+
             <button class="save-info">Update</button>
         </div>
+
+        <div class="popup export-popup inactive">
+            <label for="emailFilename">Filename:</label>
+            <input type="text" class="email-filename" id="emailFilename" value="email"/>
+            <label for="emailSubject">Subject:</label>
+            <input type="text" class="email-subject" id="emailSubject" value="Email"/>
+
+            <button class="begin-export">Export</button>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js" integrity="sha512-y3o0Z5TJF1UsKjs/jS2CDkeHN538bWsftxO9nctODL5W40nyXIbs0Pgyu7//icrQY9m6475gLaVr39i/uh/nLA==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.13.0/beautify-html.min.js"></script>
 
         <script src="assets/js/util.js"></script>
         <script src="assets/js/canvas.js"></script>

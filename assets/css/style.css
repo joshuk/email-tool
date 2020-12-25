@@ -3,7 +3,8 @@
 body { margin: 0; font-family: 'Kumbh Sans', sans-serif; font-size: 16px; }
 
 .app { position: relative; opacity: 1; }
-.app.inactive { opacity: 0.5; pointer-events: none; }
+.app.inactive { opacity: 0.5; }
+.app.start { pointer-events: none; }
 
 .app canvas { background: url('../img/dot-grid.jpg'); }
 
@@ -21,14 +22,18 @@ body { margin: 0; font-family: 'Kumbh Sans', sans-serif; font-size: 16px; }
 .popup { position: absolute; top: 50%; left: 50%; padding: 2rem 3rem; background: white; border: 4px solid #333; box-shadow: -0.5rem 0.5rem #333; min-width: 18rem; transform: translate(-50%, -50%); }
 .popup.inactive { opacity: 0; pointer-events: none; }
 
-.popup p { margin: 0; font-size: 1.25rem; }
-.popup p:not(:last-child) { margin-bottom: 1.325rem; }
+.popup p,
+.popup label { display: block; margin: 0; font-size: 1.25rem; }
+.popup p:not(:last-child),
+.popup label:not(:last-child) { margin-bottom: 1.325rem; }
 
 .popup input[type=text],
 .popup input[type=number] { height: 2rem; margin-right: 0.5rem; padding: 0.5rem; border: 2px solid #333; font-family: inherit; }
 
 .popup button { height: 2rem; padding: 0 0.75rem; background: #333; border: none; color: white; cursor: pointer; font-family: inherit; }
 
-.popup.info-popup p { margin-bottom: 0.5rem; }
-.popup.info-popup input[type=text] { width: 100%; margin-bottom: 1.25rem; }
+.popup.info-popup label,
+.popup.export-popup label { margin-bottom: 0.5rem; }
+.popup.info-popup input[type=text],
+.popup.export-popup input[type=text] { width: 100%; margin-bottom: 1.25rem; }
 .popup.info-popup textarea { display: block; width: 100%; margin-bottom: 1.25rem; padding: 0.5rem; border: 2px solid #333; font-family: inherit; resize: vertical; }
