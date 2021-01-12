@@ -345,7 +345,7 @@ const generateHTMLFromBox = (id, parentElement) => {
                     attrs: {
                         src: `images/${fileName}_${currentImageNumber}.jpg`,
                         width: box.width,
-                        height: box.height,
+                        height: Math.floor(box.height),
                         alt: box.alt ?? '',
                         border: '0',
                         style: 'display:block;'
@@ -426,7 +426,7 @@ const getImageFromBox = (id, currentImageNumber) => {
         if(exportedImages.length == imageNumber-1){
             downloadZip();
         }
-    }, 'image/jpeg', 0.9);
+    }, 'image/jpeg', 0.95);
 }
 
 const downloadZip = () => {
